@@ -7,9 +7,17 @@ const userSchema = new mongoose.Schema({
      otherNames: { type: String },
     username: { type: String, lowercase: true, unique: true },
     password: { type: String, },
-    userRole: { type: String, enum: ['farmer', 'buyer'],},
+    role: { type: String, enum: ['Farmer', 'Buyer',],},
     email: { type: String, lowercase: true, unique: true },
     termsAndConditions: { type: Boolean },
+    profileType: {
+     type: String,
+     enum: ['farmerProfile', 'buyerProfile'],
+     default: function() {
+       return this.role === 'Farmer' ? 'farmerProfile' : this.role === 'Buyer' ? 'buyerProfile' : null;
+     }
+   },
+   userProfile: { type: mongoose.Schema.Types.ObjectId, refPath: 'profileType' },
     
   },{
        timestamps: true

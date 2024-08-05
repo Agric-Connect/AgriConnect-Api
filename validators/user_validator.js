@@ -6,7 +6,7 @@ export const userValidator = Joi.object({
     otherNames: Joi.string(),
     username: Joi.string().required(),
     email: Joi.string().email().required(),
-    userRole: Joi.string().valid('farmer', 'buyer').required(),
+    role: Joi.string().valid('Farmer', 'Buyer', ).required(),
     password: Joi.string().min(8).required(),
     confirmPassword: Joi.ref('password'),
     termsAndConditions: Joi.boolean().required(),

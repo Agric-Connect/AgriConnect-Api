@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 import expressOasGenerator from '@mickeymond/express-oas-generator'
 import cors from "cors";
 import { restartServer } from "./restart_server.js";
+import errorHandler from "errorhandler";
 import userRouter from "./routes/user.js";
+
 
 
 //Connect to database
@@ -28,13 +30,17 @@ app.get("/api/v1/health", (req, res) => {
   });
   
 app.use("/api/v1", userRouter);
+expressOasGenerator.handleRequests();
+app.use((req, res) => res.redirect('/api-docs/')); 
+app.use(errorHandler({ log: false }));
+
+
+
 
 const reboot = async () => {
     setInterval(restartServer, process.env.INTERVAL)
     }
 
-expressOasGenerator.handleRequests();
-app.use((req, res) => res.redirect('/api-docs/')); 
 
 //Listening to incoming messsages
 const PORT = process.env.PORT || 7000
