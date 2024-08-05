@@ -85,7 +85,7 @@ export const patchProfile = async(req,res,next) => {
            };
          }
     
-         const {error, value} = validationData.validate(validationData)
+         const {error, value} = validator.validate(validationData)
          if (error) {
             return res.status(400).send(error.details[0].message);
            }
@@ -127,7 +127,7 @@ export const getUserProfile = async(req,res, next) => {
     }else {
         return res.status(400).json({ message: "Invalid user role" });
       } 
-      
+
       if(!profile){
           return res.status(200).send({message:"Profile not found", profile})
       }
