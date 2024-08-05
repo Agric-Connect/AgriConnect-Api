@@ -5,6 +5,8 @@ import cors from "cors";
 import { restartServer } from "./restart_server.js";
 import errorHandler from "errorhandler";
 import userRouter from "./routes/user.js";
+import farmerRouter from "./routes/farmer_profile_route.js";
+import buyerRouter from "./routes/buyer_profile_route.js";
 
 
 
@@ -21,7 +23,7 @@ app.use(cors({credentials: true, origin: '*'}));
 
 expressOasGenerator.handleResponses(app,{
     alwaysServeDocs: true,
-    tags:['auth'],
+    tags:['auth', 'profiles'],
     mongooseModels: mongoose.modelNames()
 })
 
@@ -29,7 +31,10 @@ app.get("/api/v1/health", (req, res) => {
     res.json({ status: "UP" });
   });
   
+  //Use routers
 app.use("/api/v1", userRouter);
+app.use("/api/v1", farmerRouter)
+app.use("/api/v1", buyerRouter)
 expressOasGenerator.handleRequests();
 app.use((req, res) => res.redirect('/api-docs/')); 
 app.use(errorHandler({ log: false }));
