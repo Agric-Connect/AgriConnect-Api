@@ -113,10 +113,21 @@ export const getUserProfile = async(req,res, next) => {
     if (!userId || !userRole) {
       return res.status(401).send({ message: "Unauthorized" });
     }
-    const profile = await (userRole ==='Farmer'? Farmer : Buyer).findOne({  user: userId}).populate({
-      path: 'user',
-      select: '-password'
-    });
+    let profile;  
+    if (userRole === 'Farmer') {
+        await Farmer.findOne({  user: userId}).populate({
+            path: 'user',
+            select: '-password'
+          });
+    }else if(userRole === 'Buyer'){
+        await Buyer.findOne({  user: userId}).populate({
+            path: 'user',
+            select: '-password'
+        })
+    }else {
+        return res.status(400).json({ message: "Invalid user role" });
+      } 
+      
       if(!profile){
           return res.status(200).send({message:"Profile not found", profile})
       }
