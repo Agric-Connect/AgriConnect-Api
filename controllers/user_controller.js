@@ -4,33 +4,25 @@ import { UserModel } from "../models/user.js";
 import { loginValidator, userValidator } from "../validators/user_validator.js";
 
 export const signup = async (req, res) => {
+    const {error, value} = userValidator.validate(req.body);
+    if (error) {
+        return res.status(400).json({message: error.details[0].message});
+    }
+    const email = value.email;
 
-    //Validate user
-    try {
-        const { error, value } = userValidator.validate(req.body)
-        if (error) {
-            return res.status(400).send(error.details[0].message)
-        }
+    const ifUserExist = await UserModel.findOne({email});
+    if(ifUserExist){
+        return res.status(400).json({message: "User already exist"});
+    }else {
+        const hashedPassword = await bcrypt.hash(value.password, 12);
+        value.password = hashedPassword
 
-        //Find if user exists
-        const email = value.email
-
-        const ifUserExist = await UserModel.findOne({ email })
-        if (ifUserExist) {
-            res.status(200).json("User already exists")
-        } else {
-            const hashedPassword = await bcrypt.hash(value.password, 12)
-            value.password = hashedPassword
-
-            //create user
-            await UserModel.create(value)
-
-            return res.status(201).send({ message: 'User created successfully' })
-        }
-    } catch (error) {
-
+        await UserModel.create(value);
+        return res.status(201).json({message: "User created successfully"});
     }
 }
+
+  
 
 //User login token
 export const login = async (req, res, next) => {
@@ -70,3 +62,37 @@ export const login = async (req, res, next) => {
     }
 }
 
+
+//Get a user by username
+export const getUserByUsername = async (req, res, next) => {
+  try {
+      const username = req.params.username.toLowerCase()
+  
+      const userDetails = await UserModel.findOne({ username}) .select("-password")
+      return res.status(201).json({user:userDetails})
+  } catch (error) {
+    next
+  }
+}
+
+
+//Get users
+
+export const getUsers = async (req, res) => {
+ 
+
+    const email = req.query.email?.toLowerCase()
+    const username = req.query.username?.toLowerCase();
+  
+    const filter = {};
+    if (email) {
+      filter.email = email;
+    }
+    if (username) {
+      filter.username = username;
+    }
+  
+    const users = await UserModel.find(filter);
+  
+    return res.status(200).json({ users });
+  };
