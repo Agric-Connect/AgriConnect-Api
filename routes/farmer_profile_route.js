@@ -9,7 +9,7 @@ const farmerRouter = Router()
 //Creating routes
 farmerRouter.get ('/users/farmers/profiles', isAuthenticated, getUserProfile);
 
-farmerRouter.post('/users/farmers/profiles', isAuthenticated, remoteUpload.fieldsremoteUpload.fields([
+farmerRouter.post('/users/farmers/profiles', isAuthenticated, remoteUpload.fields([
     { name: "profilePicture", maxCount: 1 },
     { name: "certification", maxCount: 1 },
   ]), createUserProfile);

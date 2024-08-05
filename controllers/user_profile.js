@@ -106,7 +106,7 @@ export const patchProfile = async(req,res,next) => {
 }
 
 //get a userprofile
-export const getUserProfile = (req,res, next) => {
+export const getUserProfile = async(req,res, next) => {
   try {
     const userId = req.session?.user?.id || req?.user?.id
     const userRole = req.user?.role
