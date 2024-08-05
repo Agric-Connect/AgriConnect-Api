@@ -5,7 +5,7 @@ export const buyerValidator = {
     sex: joi.string().valid('male', 'female'),
     location: joi.string(),
     profilePicture: joi.string(),
-    contact: joi.array().items(joi.string()),
+    contact: joi.array().items(joi.string().email()),
     user: joi.string(),
 }
 
@@ -15,7 +15,7 @@ export const farmerValidator = {
     location: joi.string(),
     profilePicture: joi.string(),
     description: joi.string(),
-    contact: joi.array().items(joi.string()),
+    contact: joi.array().items(joi.string().email()),
     certification: joi.array().items(joi.string()),
     user: joi.string(),
 }

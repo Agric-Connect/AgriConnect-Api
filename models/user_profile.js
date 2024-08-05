@@ -32,6 +32,6 @@ description: {type: String},//(Short description about the farmer, farm history,
 });
    farmerSchema.plugin(toJSON)
 
-   export const Farmer = model('farmerProfile', buyerSchema);
+   export const Farmer = model('farmerProfile', farmerSchema);
 
 
