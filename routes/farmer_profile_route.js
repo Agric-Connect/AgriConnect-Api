@@ -1,23 +1,24 @@
 import { Router } from "express";
-import { isAuthenticated } from "../middlewares/auth.js";
-import { createUserProfile, getUserProfile, patchProfile } from "../controllers/user_profile.js";
 import { remoteUpload } from "../middlewares/upload.js";
+import { isAuthenticated } from "../middlewares/auth.js";
+import { hasPermission } from "../middlewares/auth.js";
+import { addFarmerProfile, getFarmerUserProfile } from "../controllers/farmer_profile_controller.js";
 
 //Setting up Route
-const farmerRouter = Router()
+const farmerRouter = Router();
 
 //Creating routes
-farmerRouter.get ('/users/farmers/profiles', isAuthenticated, getUserProfile);
+farmerRouter.get ('/users/farmers/profiles', isAuthenticated, getFarmerUserProfile);
 
-farmerRouter.post('/users/farmers/profiles', isAuthenticated, remoteUpload.fields([
+farmerRouter.post('/users/farmers/profiles',remoteUpload.fields([
     { name: "profilePicture", maxCount: 1 },
     { name: "certification", maxCount: 1 },
-  ]), createUserProfile);
+  ]), isAuthenticated, addFarmerProfile);
 
-  farmerRouter.patch ('/users/farmers/profiles/:id',isAuthenticated, remoteUpload.fields([
+  farmerRouter.patch ('/users/farmers/profiles/:id',remoteUpload.fields([
     { name: "profilePicture", maxCount: 1 },
     { name: "certification", maxCount: 1 },
-  ]), patchProfile );
+  ]),isAuthenticated,  );
 
   export default farmerRouter
 

@@ -69,6 +69,7 @@ export const getUserByUsername = async (req, res, next) => {
       const username = req.params.username.toLowerCase()
   
       const userDetails = await UserModel.findOne({ username}) .select("-password")
+      .populate("userProfile")
       return res.status(201).json({user:userDetails})
   } catch (error) {
     next
