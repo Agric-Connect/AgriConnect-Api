@@ -1,16 +1,15 @@
 import { UserModel } from "../models/user.js";
-import { Farmer } from "../models/farmer.js";
-import { farmerValidator } from "../validators/user_profile_validator.js";
+import { buyerValidator } from "../validators/user_profile_validator.js";
+import { Buyer } from "../models/buyer.js";
 import { ProfileTypeModel } from "../models/user_profile.js";
 
 //Create farmer profile
-export const addFarmerProfile = async (req, res, next) => {
+export const addBuyerProfile = async (req, res, next) => {
   //Validating
   try {
-    const { error, value } = farmerValidator.validate({
+    const { error, value } = buyerValidator.validate({
       ...req.body,
-      profilePicture: req.files?.profilePicture?.filename,
-      certification: req.files?.certification?.filename
+      profilePicture: req.file?.filename,
     });
     if (error) {
       return res.status(400).send(error.details[0].message)
@@ -25,15 +24,15 @@ export const addFarmerProfile = async (req, res, next) => {
     }
 
     //Create the farmer profile
-    const farmerProfile = await Farmer.create({ ...value, user: userId })
+    const buyerProfile = await Buyer.create({ ...value, user: userId })
 
     //Find profile
-    let profileType = await ProfileTypeModel.findOne({ type: 'farmerProfile', profileRef: farmerProfile.id })
+    let profileType = await ProfileTypeModel.findOne({ type: 'buyerProfile', profileRef: buyerProfile._id })
 
     if (!profileType) {
       profileType = await ProfileTypeModel.create({
-        type: 'farmerProfile',
-        profileRef: farmerProfile._id,
+        type: 'buyerProfile',
+        profileRef: buyerProfile._id,
       });
     }
 
@@ -42,19 +41,19 @@ export const addFarmerProfile = async (req, res, next) => {
       return res.status(500).send('Failed to create or retrieve ProfileType');
     }
 
-    // associate the User document with the new ProfileType
-    //  user.profilePicture = 'farmerProfile';
+    // Update the User document with the new ProfileType
+    // user.profilePicture = 'buyerProfile';
     user.userProfile = profileType.id
     await user.save();
 
-    return res.status(201).json(farmerProfile);
+    return res.status(201).json(buyerProfile);
 
   } catch (error) {
     next(error)
   }
 }
 
-export const getFarmerUserProfile = async (req, res) => {
+export const getBuyerUserProfile = async (req, res) => {
   try {
     //  Get user id 
     const userId = req.session?.user?.id || req.user?.id
@@ -70,8 +69,8 @@ export const getFarmerUserProfile = async (req, res) => {
 
     // Check the profile type and populate accordingly
     let profile;
-    if (user.profileType === 'farmerProfile') {
-      profile = await Farmer.findById(user.userProfile.profileRef).populate({
+    if (user.profileType === 'buyerProfile') {
+      profile = await Buyer.findById(user.userProfile.profileRef).populate({
         path: 'user',
         select: '-password' // Exclude sensitive information
       });
@@ -91,11 +90,10 @@ export const getFarmerUserProfile = async (req, res) => {
 
 //Updating  farmer profile
 
-export const updateFarmerProfile = async (req, res) => {
-  const { error, value } = farmerValidator.validate({
+export const updateBuyerProfile = async (req, res) => {
+  const { error, value } = buyerValidator.validate({
     ...req.body,
-    profilePicture: req.files?.profilePicture?.filename,
-    certification: req.files?.certification?.filename
+    profilePicture: req.file?.filename
   });
   if (error) {
     return res.status(400).send(error.details[0].message)
@@ -120,21 +118,21 @@ export const updateFarmerProfile = async (req, res) => {
   console.log(`ProfileType found: ${profileType}`);
 
   //find the farmer profile id
-  const farmerProfileId = profileType.profileRef;
-  console.log(`FarmerProfile ID: ${farmerProfileId}`);
+  const buyerProfileId = profileType.profileRef;
+  console.log(`BuyerProfile ID: ${buyerProfileId}`);
 
-  const farmerProfile = await Farmer.findById(farmerProfileId);
+  const buyerProfile = await Buyer.findById(buyerProfileId);
 
-    if (!farmerProfile) {
-      console.log(`Farmer profile not found for user ${user}`);
-      return res.status(404).send("Farmer profile not found");
+    if (!buyerProfile) {
+      console.log(`Buyer profile not found for user ${user}`);
+      return res.status(404).send("Buyer profile not found");
     }
 
-  console.log(`Farmer profile found: ${farmerProfile}`);
+  console.log(`Buyer profile found: ${buyerProfile}`);
 
   // Update the Farmer profile with validated data
-  const updatedProfile = await Farmer.findByIdAndUpdate(
-    farmerProfile._id,
+  const updatedProfile = await Buyer.findByIdAndUpdate(
+    buyerProfile._id,
     { ...value },
     { new: true }
   )

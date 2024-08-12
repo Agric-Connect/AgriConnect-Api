@@ -2,10 +2,10 @@ export const roles = [
     {
         role: 'Farmer',
         permissions: [
-            'read_Farmer',
-            'update_Farmer',
-            'delete_Farmer',
-            'create_Farmer',
+            'read_Farmer_profile',
+            'update_Farmer_profile',
+            'delete_Farmer_profile',
+            'create_Farmer_profile',
 
 
         ]
