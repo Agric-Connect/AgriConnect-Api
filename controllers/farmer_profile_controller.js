@@ -5,50 +5,52 @@ import { ProfileTypeModel } from "../models/user_profile.js";
 
 //Create farmer profile
 export const addFarmerProfile = async (req, res, next) => {
-  //Validating
   try {
-    const { error, value } = farmerValidator.validate({
+    console.log('Request files:', req.files); // Log all files
+    // Access file details
+    const profilePicture = req.files?.profilePicture?.[0]?.filename;
+    const certification = req.files?.certification?.[0]?.filename;
+        
+    console.log('Profile Picture Filename:', profilePicture);
+    console.log('Certification Filename:', certification);
+    
+    //Validating Profile
+    const {error, value} = farmerValidator.validate({
       ...req.body,
-      profilePicture: req.files?.profilePicture?.filename,
-      certification: req.files?.certification?.filename
+      profilePicture,
+      certification
     });
     if (error) {
       return res.status(400).send(error.details[0].message)
-    };
-
-    //find the user
-    const userId = req.session?.user?.id || req.user?.id
+    }
+    console.log(value)
+    const userId = req.session?.user.id || req.user?.id
+  
     const user = await UserModel.findById(userId)
-
-    if (!user) {
+    if(!user){
       return res.status(404).send('User not found')
     }
-
-    //Create the farmer profile
-    const farmerProfile = await Farmer.create({ ...value, user: userId })
-
-    //Find profile
-    let profileType = await ProfileTypeModel.findOne({ type: 'farmerProfile', profileRef: farmerProfile.id })
-
-    if (!profileType) {
-      profileType = await ProfileTypeModel.create({
-        type: 'farmerProfile',
-        profileRef: farmerProfile._id,
-      });
-    }
-
-    // Ensure profileType is not null
-    if (!profileType) {
-      return res.status(500).send('Failed to create or retrieve ProfileType');
-    }
-
-    // associate the User document with the new ProfileType
-    //  user.profilePicture = 'farmerProfile';
-    user.userProfile = profileType.id
-    await user.save();
-
-    return res.status(201).json(farmerProfile);
-
+  
+  const farmerProfile = await Farmer.create({...value, user: userId});
+  //Find profile type
+  let profileType = await ProfileTypeModel.findOne({type: 'farmerProfile', profileRef: farmerProfile.id})
+  
+  if(!profileType){
+    profileType = await ProfileTypeModel.create({
+      type: 'farmerProfile',
+      profileRef: farmerProfile._id
+    });
+  }
+   // Ensure profileType is not null
+   if (!profileType) {
+    return res.status(500).send('Failed to create or retrieve ProfileType');
+  }
+  
+  // associate the User document with the new ProfileType
+  user.userProfile = profileType.id
+  await user.save();
+  
+  return res.status(201).json(farmerProfile);
   } catch (error) {
     next(error)
   }
@@ -100,6 +102,8 @@ export const updateFarmerProfile = async (req, res) => {
   if (error) {
     return res.status(400).send(error.details[0].message)
   };
+
+ 
 
   const userId = req.session?.user?.id || req.user.id
   //find

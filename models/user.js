@@ -11,7 +11,9 @@ const userSchema = new Schema({
     email: { type: String, lowercase: true, unique: true },
     termsAndConditions: { type: Boolean },
     userProfile: {type: Types.ObjectId, ref: 'ProfileType'},
-    
+    listings:[{type: Types.ObjectId, ref: 'listing'}],
+    savedListings:[{type:Types.ObjectId, ref: "listing"}],
+    myOrders:[{type: Types.ObjectId, ref: 'listing'}],
     profileType: {
      type: String,
      enum: ['farmerProfile', 'buyerProfile'],

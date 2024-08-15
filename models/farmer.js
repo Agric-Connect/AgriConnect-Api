@@ -7,8 +7,8 @@ const farmerSchema = new Schema({
     location: {type: String},
    profilePicture: {type: String},
 description: {type: String},//(Short description about the farmer, farm history, etc.)
-   contact: [{type: String}],
-   certification: [{type: String}],
+   contact: {type: String},
+   certification: {type: String},
    user: {type: Types.ObjectId, ref:"User", select: false},
 },{
     timestamps: true,

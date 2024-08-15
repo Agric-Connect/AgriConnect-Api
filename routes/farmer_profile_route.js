@@ -10,14 +10,14 @@ const farmerRouter = Router();
 //Creating routes
 farmerRouter.get ('/users/farmers/profiles', isAuthenticated, getFarmerUserProfile);
 
-farmerRouter.post('/users/farmers/profiles', isAuthenticated , remoteUpload.fields([
+farmerRouter.post ('/users/farmers/profiles',isAuthenticated,remoteUpload.fields([
+  {name: 'profilePicture', maxCount: 1},
+  {name: 'certification', maxCount: 2}
+]),hasPermission('update_Farmer_profile'), addFarmerProfile)
+ 
+farmerRouter.patch ('/users/farmers/profiles/:id',isAuthenticated, remoteUpload.fields([
     { name: "profilePicture", maxCount: 1 },
-    { name: "certification", maxCount: 1 },
-  ]), hasPermission('create_Farmer_profile'),addFarmerProfile);
-
-  farmerRouter.patch ('/users/farmers/profiles/:id',isAuthenticated, remoteUpload.fields([
-    { name: "profilePicture", maxCount: 1 },
-    { name: "certification", maxCount: 1 },
+    { name: "certification", maxCount: 2 },
   ]), hasPermission('update_Farmer_profile'),  updateFarmerProfile);
 
   farmerRouter.delete ('/users/farmers/profiles/:id', isAuthenticated, deleteFarmerProfile)
