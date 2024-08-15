@@ -5,7 +5,7 @@ export const savelistings = async(req,res,next) => {
    try {
      //Adding favourite listings
      //Find user id
-     const userId = req.user.id
+     const userId = req.session?.user?.id || req.user?.id
      
      //Get id from listings
      const listingId = req.params.id
@@ -85,3 +85,26 @@ export const getFavourites = async (req, res, next)=> {
        next(error) 
     }
 }
+
+// export const getSavedListings = async (req, res, next) => {
+//     try {
+//       // Find user id
+//       const userId = req.user.id;
+  
+//       // Find user in the database
+//       const user = await UserModel.findById(userId);
+//       if (!user) {
+//         return res.status(404).json({ message: 'User not found' });
+//       }
+  
+//       // Get the saved listings IDs
+//       const savedListingsIds = user.savedListings;
+  
+//       // Find the listings corresponding to the saved IDs
+//       const savedListings = await ListingsModel.find({ _id: { $in: savedListingsIds } });
+  
+//       res.status(200).json({ message: 'Saved listings retrieved', savedListings });
+//     } catch (error) {
+//       next(error);
+//     }
+//   };

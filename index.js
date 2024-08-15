@@ -9,6 +9,7 @@ import farmerRouter from "./routes/farmer_profile_route.js";
 import buyerRouter from "./routes/buyer_profile_route.js";
 import farmInfoRouter from "./routes/farm_info_route.js";
 import listingsRouter from "./routes/listings.js";
+import savedListingsRouter from "./routes/savedlistings.js";
 
 
 
@@ -26,7 +27,7 @@ app.use(cors({credentials: true, origin: '*'}));
 
 expressOasGenerator.handleResponses(app,{
     alwaysServeDocs: true,
-    tags:['auth', 'profiles', 'information'],
+    tags:['auth', 'profiles', 'information', 'listings', 'saved listings', 'orders', 'messages'],
     mongooseModels: mongoose.modelNames()
 })
 
@@ -40,7 +41,7 @@ app.use("/api/v1", farmerRouter)
 app.use("/api/v1", buyerRouter)
 app.use("/api/v1", farmInfoRouter)
 app.use("/api/v1", listingsRouter)
-
+app.use("/api/v1", savedListingsRouter)
 expressOasGenerator.handleRequests();
 app.use((req, res) => res.redirect('/api-docs/')); 
 app.use(errorHandler({ log: false }));
