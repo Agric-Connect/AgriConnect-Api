@@ -8,6 +8,7 @@ import userRouter from "./routes/user.js";
 import farmerRouter from "./routes/farmer_profile_route.js";
 import buyerRouter from "./routes/buyer_profile_route.js";
 import farmInfoRouter from "./routes/farm_info_route.js";
+import listingsRouter from "./routes/listings.js";
 
 
 
@@ -38,7 +39,7 @@ app.use("/api/v1", userRouter);
 app.use("/api/v1", farmerRouter)
 app.use("/api/v1", buyerRouter)
 app.use("/api/v1", farmInfoRouter)
-
+app.use("/api/v1", listingsRouter)
 
 expressOasGenerator.handleRequests();
 app.use((req, res) => res.redirect('/api-docs/')); 

@@ -85,6 +85,7 @@ export const getUserByUsername = async (req, res, next) => {
   
       const userDetails = await UserModel.findOne({ username}) .select("-password")
       .populate("userProfile")
+      .populate("listings")
       return res.status(201).json({user:userDetails})
   } catch (error) {
     next(error)

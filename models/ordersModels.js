@@ -1,5 +1,5 @@
 import { model, Schema, Types } from "mongoose";
-import {toJSON} from '@reis/mongoose-to-json';
+import { toJSON } from '@reis/mongoose-to-json';
 
 const ordersSchema = new Schema({
     user: { type: Types.ObjectId, ref: "User", required: true },
