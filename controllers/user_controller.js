@@ -49,7 +49,8 @@ export const login = async (req, res, next) => {
   
        const user = await UserModel.findOne({
           $or: [{email: value.email}, 
-              {username: value.username}
+              {username: value.username},
+        
           ]
        })
        if(!user){
@@ -68,7 +69,8 @@ export const login = async (req, res, next) => {
                 );
                 res.status(200).json({
                   message: 'User logged in successfully',
-                  accessToken: token
+                  accessToken: token,
+                  role: user.role
                 })
           }
       }
