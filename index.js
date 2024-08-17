@@ -23,7 +23,7 @@ const app = express()
 
 //Applying middleware
 app.use(express.json());
-app.use(cors({credentials: true, origin: '*'}));
+app.use(cors({credentials: false, origin: '*'}));
 
 expressOasGenerator.handleResponses(app,{
     alwaysServeDocs: true,
